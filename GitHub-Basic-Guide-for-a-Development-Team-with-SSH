@@ -1,0 +1,229 @@
+# Guía básica de GitHub para un equipo de desarrollo (con SSH)
+
+Simulación: equipo que empieza un proyecto nuevo
+
+--
+
+## 1️⃣ Qué es Git y qué es GitHub
+
+**Git**
+
+- sistema de control de versiones
+- guarda el historial de cambios
+- permite trabajar a varios desarrolladores al mismo tiempo
+
+**GitHub**
+
+- plataforma donde se alojan repositorios Git
+- permite colaboración
+- gestiona permisos y revisiones de código
+
+Esquema:
+- ordenador desarrollador → Git → GitHub (repositorio central)
+
+---
+
+## 2️⃣ Crear el repositorio del proyecto
+Uno de los desarrolladores crea el repositorio.
+Pasos:
+Entrar en github.com
+Pulsar New repository
+Configurar:
+Repository name: proyecto-web
+Visibility: Private
+Add README: opcional
+Add .gitignore: recomendable
+Se crea el repositorio.
+Ejemplo:
+https://github.com/empresa/proyecto-web
+
+---
+
+## 3️⃣ Dar acceso al equipo
+
+Para que los desarrolladores puedan trabajar.
+Pasos:
+Ir al repositorio
+Settings
+Collaborators / Access
+Añadir usuarios
+Permisos habituales:
+
+
+Permiso
+Uso
+Read
+solo lectura
+Write
+subir cambios
+Admin
+gestionar repo
+Para desarrolladores:
+Write
+
+---
+
+## 4️⃣ Instalar Git
+Cada desarrollador instala Git.
+Descarga:
+https://git-scm.com
+Comprobar instalación:
+git --version
+
+---
+
+## 5️⃣ Configurar Git en el ordenador
+Cada desarrollador debe identificarse.
+git config --global user.name "Nombre"
+git config --global user.email "correo@empresa.com"
+Esto identifica quién hace cada commit.
+
+---
+
+## 6️⃣ Configurar acceso SSH (solo se hace una vez)
+Cada desarrollador debe generar una clave SSH para autenticarse con GitHub.
+Generar clave SSH
+ssh-keygen -t ed25519 -C "correo@empresa.com"
+Aceptar las rutas por defecto.
+Se crean dos archivos:
+~/.ssh/id_ed25519
+~/.ssh/id_ed25519.pub
+Iniciar el agente SSH
+eval "$(ssh-agent -s)"
+Añadir la clave:
+ssh-add ~/.ssh/id_ed25519
+Copiar clave pública
+Mostrar la clave:
+cat ~/.ssh/id_ed25519.pub
+Copiar el contenido.
+Añadir clave en GitHub
+Ir a:
+GitHub → Settings → SSH and GPG keys
+Pulsar:
+New SSH key
+Pegar la clave.
+Comprobar conexión
+ssh -T git@github.com
+Debe aparecer:
+Hi usuario! You've successfully authenticated.
+
+---
+
+## 7️⃣ Clonar el proyecto con SSH
+Cada desarrollador descarga el repositorio.
+Usar la URL SSH:
+git clone git@github.com:empresa/proyecto-web.git
+Entrar en la carpeta:
+cd proyecto-web
+Ahora el desarrollador tiene una copia local del proyecto.
+
+---
+
+## 8️⃣ Flujo básico de trabajo
+Cada desarrollador trabaja en su ordenador.
+Flujo básico:
+1 modificar archivos
+2 guardar cambios (commit)
+3 subir cambios (push)
+Ver cambios
+git status
+Añadir cambios
+git add .
+Crear commit
+git commit -m "Añade nueva funcionalidad"
+Subir cambios al repositorio
+git push
+Como usamos SSH, no se pide usuario ni contraseña.
+
+---
+
+## 9️⃣ Descargar cambios de otros desarrolladores
+Antes de empezar a trabajar:
+git pull
+Esto descarga los cambios de otros compañeros.
+
+---
+
+## 🔟 Sistema de trabajo recomendado
+Nunca trabajar directamente en main.
+Usar ramas.
+Estructura típica
+main → versión estable
+develop → integración del equipo
+feature → nuevas funcionalidades
+Ejemplo:
+main
+develop
+feature-login
+feature-dashboard
+feature-api
+
+---
+
+## 1️⃣1️⃣ Flujo profesional de trabajo
+Crear rama de trabajo
+git checkout -b feature-login
+Trabajar y hacer commits
+git add .
+git commit -m "Implementa login"
+Subir rama al repositorio
+git push -u origin feature-login
+Crear Pull Request
+En GitHub:
+feature-login → develop
+Otro desarrollador revisa el código.
+Si todo está correcto:
+merge
+
+---
+
+## 1️⃣2️⃣ Flujo diario recomendado
+Cada desarrollador hace:
+1 actualizar proyecto
+git pull
+2 crear rama
+git checkout -b feature-nueva-funcion
+3 trabajar
+editar archivos
+4 guardar cambios
+git add .
+git commit -m "Añade nueva función"
+5 subir cambios
+git push
+6 crear Pull Request
+Revisión del código antes de integrar.
+
+---
+
+## 1️⃣3️⃣ Comandos más usados
+git clone
+git pull
+git add .
+git commit -m "mensaje"
+git push
+git branch
+git checkout
+
+---
+
+## 1️⃣4️⃣ Buenas prácticas
+✔ hacer git pull antes de trabajar
+✔ usar ramas por funcionalidad
+✔ commits claros
+✔ revisar código con Pull Requests
+✔ no trabajar directamente en main
+
+---
+
+## 1️⃣5️⃣ Esquema visual del flujo
+GitHub (repositorio central)
+        ↑
+        ↓
+Dev A        Dev B        Dev C
+  |            |            |
+ git pull    git pull     git pull
+ crear rama  crear rama   crear rama
+ trabajar    trabajar     trabajar
+ commit      commit       commit
+ push        push         push
+ Pull Request
